@@ -1,7 +1,6 @@
-export const dynamic = 'force-static';
 import { NextResponse } from 'next/server';
 
-import { generateCorrelationId } from '@/lib/correlation';
+// import { generateCorrelationId } from '@/lib/correlation';
 import { getAccessToken } from '@/lib/vendorAuth';
 
 export async function GET(req: Request) {
@@ -12,19 +11,20 @@ export async function GET(req: Request) {
   const type = searchParams.get("type") ?? "IM::any";
 
   const token = await getAccessToken();
-  const correlationId = generateCorrelationId();
+  // const correlationId = generateCorrelationId();
+  const correlationId = process.env.IM_CORRELATION_ID!;
   const base = process.env.RESELLER_API_BASE_URL!;
-
-  const keywords = searchParams.getAll("keyword");
-  keywords.forEach((k) => {
-    vendorUrl.searchParams.append("keyword", k);
-  });
 
   const vendorUrl = new URL(`${base}/catalog`);
   // vendorUrl.searchParams.set("q", q);
   vendorUrl.searchParams.set("pageNumber", pageNumber);
   vendorUrl.searchParams.set("pageSize", pageSize);
   vendorUrl.searchParams.set("type", type);
+
+  const keywords = searchParams.getAll("keyword");
+  keywords.forEach((k) => {
+    vendorUrl.searchParams.append("keyword", k);
+  });
 
   const res = await fetch(vendorUrl.toString(), {
     headers: {
