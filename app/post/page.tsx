@@ -1,4 +1,4 @@
-import CatalogBrowser from '@/app/CatalogBrowser';
+import CatalogBrowser from '@/app/post/CatalogBrowser';
 
 export default function CatalogPage() {
   return (
