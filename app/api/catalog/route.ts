@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-// import { generateCorrelationId } from '@/lib/correlation';
+import { generateCorrelationId } from '@/lib/correlation';
 import { getAccessToken } from '@/lib/vendorAuth';
 
 export async function GET(req: Request) {
@@ -11,8 +11,9 @@ export async function GET(req: Request) {
   const type = searchParams.get("type") ?? "IM::any";
 
   const token = await getAccessToken();
-  // const correlationId = generateCorrelationId();
-  const correlationId = process.env.IM_CORRELATION_ID!;
+  const correlationId = generateCorrelationId();
+  console.log(correlationId);
+  // const correlationId = process.env.IM_CORRELATION_ID!;
   const base = process.env.RESELLER_API_BASE_URL!;
 
   const vendorUrl = new URL(`${base}/catalog`);
@@ -20,15 +21,18 @@ export async function GET(req: Request) {
   vendorUrl.searchParams.set("pageNumber", pageNumber);
   vendorUrl.searchParams.set("pageSize", pageSize);
   vendorUrl.searchParams.set("type", type);
+  // vendorUrl.searchParams.set("skipAuthorisation", "true");
 
   const keywords = searchParams.getAll("keyword");
   keywords.forEach((k) => {
     vendorUrl.searchParams.append("keyword", k);
   });
 
+  console.log(vendorUrl.toString());
   const res = await fetch(vendorUrl.toString(), {
     headers: {
       Authorization: `Bearer ${token}`,
+      "x-api-key": process.env.RESELLER_SECRET_KEY!,
       "IM-CustomerNumber": process.env.IM_CUSTOMER_NUMBER!,
       "IM-CorrelationID": correlationId,
       "IM-CountryCode": process.env.IM_COUNTRY_CODE!,
@@ -39,6 +43,7 @@ export async function GET(req: Request) {
   });
 
   if (!res.ok) {
+    console.log(res);
     const text = await res.text();
     return NextResponse.json(
       { error: "Vendor API error", details: text },

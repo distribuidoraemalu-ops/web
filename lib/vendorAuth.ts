@@ -31,6 +31,7 @@ export async function getAccessToken() {
   });
 
   if (!res.ok) {
+    // console.log(res);
     const text = await res.text();
     throw new Error(`Token request failed: ${res.status} ${text}`);
   }

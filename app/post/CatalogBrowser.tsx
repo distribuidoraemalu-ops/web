@@ -54,10 +54,11 @@ export default function CatalogBrowser() {
     setError(null);
 
     const url = buildCatalogUrl({ keywords, page: p, pageSize });
+    console.log(url);
 
     try {
       const res = await fetch(url, { method: "GET" });
-      console.log(res);
+      // console.log(res);
       const json = await res.json();
 
       if (!res.ok) {
