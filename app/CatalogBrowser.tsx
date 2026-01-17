@@ -23,7 +23,7 @@ function buildCatalogUrl({
 export default function CatalogBrowser() {
   const [input, setInput] = useState(""); // raw input "hp probook"
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(24);
+  const [pageSize, setPageSize] = useState(25);
 
   const [data, setData] = useState<CatalogResponse | null>(null);
   const [items, setItems] = useState<Product[]>([]);
@@ -139,7 +139,7 @@ export default function CatalogBrowser() {
             border: "1px solid rgba(0,0,0,0.15)",
           }}
         >
-          {[12, 24, 36, 48, 60].map((n) => (
+          {[10, 25, 50, 75, 100].map((n) => (
             <option key={n} value={n}>
               {n}/page
             </option>
